@@ -1,0 +1,165 @@
+﻿
+
+@model PojectDepot.Models.Supplier
+<script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+@{
+    ViewBag.Title = "CreateSupplier";
+}
+<h2>Add Customer</h2>
+<br />
+<div>
+    <div style="display: flex; justify-content: space-between">
+        <h6>Supplier Id:</h6>
+        @Html.TextBoxFor(m => m.SupplierDetails_Id)
+
+
+        <h6>Supplier Name:</h6>
+        @Html.TextBoxFor(m => m.Supplier_name)
+
+
+        <h6>Depot Id:</h6>
+        @Html.TextBoxFor(m => m.Depot_Id)
+    </div>
+    <br />
+    <div style="display: flex; justify-content: space-between">
+
+        <h6>Distance From Depot:</h6>
+        <input type="number" id="Distancefrom_depot" />
+
+
+        <h6>Area:</h6>
+        @Html.TextBoxFor(m => m.Area)
+
+
+        <h6>Location:</h6>
+        @Html.DropDownListFor(m => m.Supplier_location, new List<SelectListItem>
+        {
+            new SelectListItem { Text = "Select Status", Value = "", Selected = true},
+            new SelectListItem { Text = "Chennai", Value = "Chennai"},
+            new SelectListItem { Text = "Kovai", Value = "Kovai"},
+            new SelectListItem { Text = "Salem", Value = "Salem"}
+        })
+        <br />
+
+
+    </div>
+    <br />
+    <h6>Effective From:</h6>
+    <input type="date" id="effectivefrom" />
+
+    <br />
+    <br />
+
+    <input class="btn btn-secondary" type="submit" id="btn" name="Add" />
+
+
+    <button class="btn btn-secondary" id="btndone">Done</button>
+
+</div>
+<p id="result"></p>
+
+<script>
+    $(document).ready(function (){ 
+        Date.prototype.toDateInputValue = (function () {
+            var local = new Date(this);
+            local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+            return local.toJSON().slice(0, 10);
+        });
+        $('#effectivefrom').val(new Date().toDateInputValue());
+        $("#btn").click(function () {
+
+            debugger
+            var obj = {
+                isvalid: true,
+                msgs: "",
+            }
+
+            //SupplierDetails_Id
+            if ($("#SupplierDetails_Id").val() == "") {
+                obj.msgs += "Supplier Details Id is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //Supplier_name
+            if ($("#Supplier_name").val() == "") {
+                obj.msgs += "Supplier name is Mandatory! \n";
+                obj.isvalid = false;
+            } if ($("#Supplier_name").val().length > 50) {
+                obj.msgs += "Supplier name length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+            
+
+            //Depot_Id
+            if ($("#Depot_Id").val() == "") {
+                obj.msgs += "Depot Id is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //Distancefrom_depot
+            if ($("#Distancefrom_depot").val() == "") {
+                obj.msgs += "Supplier name is Mandatory! \n";
+                obj.isvalid = false;
+            } if ($("#Distancefrom_depot").val().length > 50) {
+                obj.msgs += "Distance from depot length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+
+            //Area
+            if ($("#Area").val() == "") {
+                obj.msgs += "Area is Mandatory! \n";
+                obj.isvalid = false;
+            } if ($("#Area").val().length > 50) {
+                obj.msgs += "Area length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+
+            //Supplier_location
+            if ($("#Supplier_location").val() == "") {
+                obj.msgs += "Supplier location is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //effectivefrom
+            var d = new Date(this)
+            if ($("#effectivefrom").val() == d){
+                obj.msgs += "Effective from field is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            if (obj.isvalid == true) {
+                let objclient = {
+                    SupplierDetails_Id: $("#SupplierDetails_Id").val(),
+                    Supplier_name: $("#Supplier_name").val(),
+                    Depot_Id: $("#Depot_Id").val(),
+                    Distancefrom_depot: $("#Distancefrom_depot").val(),
+                    Area: $("#Area").val(),
+                    Supplier_location: $("#Supplier_location").val(),
+                    Effective_from: $("#effectivefrom").val(),
+
+                };
+                $.ajax({
+                    url: "/Supplier/CreateSupplier1",
+                    method: "post",
+                    data: { s: objclient },
+                    success: function (m) {
+                        debugger
+                        $("#result").html("Customer added!");
+                    }
+                });
+            }
+
+            else {
+                alert(obj.msgs);
+            }
+        });
+
+        $("#btndone").click(function () {
+            debugger
+            window.location.href = "/Supplier/SupplierList"
+        })
+    });
+</script>
+

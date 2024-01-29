@@ -1,0 +1,38 @@
+﻿<table class="table rounded-2 " id="suppTable" style="background-color:aliceblue">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Supplier Name")
+            </th>
+            <th>
+                @Html.DisplayName("Distance from Depot")
+            </th>
+            <th>
+                @Html.DisplayName("Area")
+            </th>
+            <th>
+                @Html.DisplayName("Location")
+            </th>
+            <th>
+                @Html.DisplayName("Effective From")
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        @foreach (var item in Model.Suppliers)
+        {
+            <tr id="@item.SupplierDetails_Id">
+                <td onclick="onEdit(this)">@item.Supplier_name</td>
+                <td onclick="onEdit(this)">@item.Distancefrom_depot</td>
+                <td onclick="onEdit(this)">@item.Area</td>
+                <td onclick="onEdit(this)">@item.Supplier_location</td>
+                <td onclick="onEdit(this)">@item.Effective_from</td>
+                <td>
+                    <button class="btn btn-secondary" onclick="onDelete(this)" id="@item.SupplierDetails_Id">Delete</button>
+                </td>
+            </tr>
+        }
+    </thead>
+</table>
+

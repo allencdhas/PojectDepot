@@ -1,0 +1,580 @@
+﻿
+
+@model PojectDepot.Models.CustomerListDepot
+@using System.Data
+@{
+    ViewBag.Title = "SupplierList";
+}
+<script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+
+
+<div id="create" style="display: block">
+    
+        <h2 id="createH2">
+            Create Depot &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            &emsp;&emsp;&emsp;&emsp;
+            <button id="finalSave" class="btn btn-success">SAVE</button>
+        </h2>
+        <div style="background-color: lavender" class="rounded-2">
+            <br />
+            <div>
+                <div style="display: flex; justify-content: space-between">
+                    <input style="display: none" type="number" id="depoId" value="@Model.Depot_Id" />
+                    <h6>Depot Code:</h6>
+                    @Html.TextBoxFor(m => m.Depot_code, new { value = Model.Depot_code })
+
+                    <h6>Depot Name:</h6>
+                    @Html.TextBoxFor(m => m.Depot_name, new { value = Model.Depot_name })
+                    <h6>Valid From:</h6>
+                    @Html.TextBox("fromdate", Model.Valid_from, "{0:yyyy-MM-dd}", new { type = "date" })
+                    <h6>Valid To: </h6>
+                    @*<input type="date" id="todate" value="@Model.Valid_to.ToString("{0:dd/MM/yyyy}")" />*@
+                    @Html.TextBox("todate", Model.Valid_to, "{0:yyyy-MM-dd}", new { type = "date" })
+                </div>
+                <br />
+                <div style="display: flex; justify-content: space-between">
+
+                    <h6>Type:</h6>
+                    <h6>Own</h6>
+                    @Html.RadioButtonFor(m => m.Depot_type, "Own")
+                    <h6>Rent</h6>
+                    @Html.RadioButtonFor(m => m.Depot_type, "Rent")
+
+                    <h6>Status:</h6>
+                    @Html.DropDownListFor(m => m.Status, new List<SelectListItem>
+                    {
+                        new SelectListItem { Text = "Select Status", Value = "", Selected = true},
+                        new SelectListItem { Text = "Active", Value = "Active"},
+                        new SelectListItem { Text = "In-active", Value = "In-active"}
+                    })
+
+                    <h6>Depot Adress:</h6>
+                    @Html.TextBoxFor(m => m.Depot_address, new { value = Model.Depot_address })
+                </div>
+                <br />
+                <div style="display: flex; justify-content: space-between">
+
+                    <h6>Phone Number:</h6>
+                    <input type="text" id="Phone_no" value="@Model.Phone_no" />
+                </div>
+            </div>
+            <br />
+        </div>
+</div>
+<br />
+<hr />
+<br />
+
+<h2>
+    Customer List &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&ensp;
+    <button class="btn btn-secondary" id="popup">+</button>
+</h2>
+<p align="right"></p>
+@*<table class="table rounded-2 " id="suppTable" style="background-color:aliceblue">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Supplier Name")
+            </th>
+            <th>
+                @Html.DisplayName("Distance from Depot")
+            </th>
+            <th>
+                @Html.DisplayName("Area")
+            </th>
+            <th>
+                @Html.DisplayName("Location")
+            </th>
+            <th>
+                @Html.DisplayName("Effective From")
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        @foreach (var item in Model.Suppliers)
+        {
+            <tr id="@item.SupplierDetails_Id">
+                <td onclick="onEdit(this)">@item.Supplier_name</td>
+                <td onclick="onEdit(this)">@item.Distancefrom_depot</td>
+                <td onclick="onEdit(this)">@item.Area</td>
+                <td onclick="onEdit(this)">@item.Supplier_location</td>
+                <td onclick="onEdit(this)">@item.Effective_from</td>
+                <td>
+                    <button class="btn btn-secondary" onclick="onDelete(this)" id="@item.SupplierDetails_Id">Delete</button>
+                </td>
+            </tr>
+        }
+    </thead>
+</table>*@
+@{ 
+    Html.RenderPartial("Suppliertable");
+}
+
+
+
+
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Customer</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div style="display: flex; justify-content: space-between">
+
+                        <h6>Supplier Name:</h6>
+                        @Html.TextBoxFor(m => m.Supplier_name)
+
+                        <h6>Distance From Depot:</h6>
+                        <input type="number" id="Distancefrom_depot" />
+
+                    </div>
+
+                    <br />
+                    <div style="display: flex; justify-content: space-between">
+
+                        <h6>Area:</h6>
+                        @Html.TextBoxFor(m => m.Area)
+
+
+                        <h6>Location:</h6>
+                        @Html.DropDownListFor(m => m.Supplier_location, new List<SelectListItem>
+                        {
+                            new SelectListItem { Text = "Select Status", Value = "", Selected = true},
+                            new SelectListItem { Text = "Chennai", Value = "Chennai"},
+                            new SelectListItem { Text = "Kovai", Value = "Kovai"},
+                            new SelectListItem { Text = "Salem", Value = "Salem"}
+                        })
+
+                        <h6>Effective From:</h6>
+                        <input type="date" id="effectivefrom" />
+
+                    </div>
+                    <br />
+                        
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btndone" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button style="display: block" id="btn" type="button" class="btn btn-primary">Add</button>
+                <button style="display: none" id="btnU" type="button" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        @for (int i =1; i <= ViewBag.numPages; i++)
+        {
+            <li id="@i" class="page-item" onclick="pageclick(this)"><a class="page-link" href="#">@i</a></li>
+        }
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>-->
+        @* <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        *@
+    <!--</ul>
+</nav>-->
+
+
+<script type="text/javascript">
+
+    //onDelete
+    function onDelete(e) {
+        debugger
+        $("#" + e.id).hide();
+        let objclient = {
+            SupplierDetails_Id: $("#" + e.id).attr('id'),
+            Supplier_name: $("#" + e.id)[0].cells[0].innerHTML,
+            //Depot_Id: $("#Depot_Id").val(),
+            Distancefrom_depot: $("#Distancefrom_depot").val(),
+            Area: $("#" + e.id)[0].cells[2].innerHTML,
+            Supplier_location: $("#" + e.id)[0].cells[3].innerHTML,
+            Effective_from: $("#" + e.id)[0].cells[4].innerHTML,
+
+        }
+        $.ajax({
+
+            url: "/Supplier/flagD",
+            method: "POST",
+            data: {
+                id: e.id
+            },
+            dataType: "JSON",
+            success: function (m) {
+                debugger
+                //window.location.href = "/Depot/Depot?value=y";
+                alert("Deleted Successfully!")
+            }
+        });
+    };
+
+    //onEdit
+    function onEdit(e) {
+        
+        $("#staticBackdropLabel").text("Edit Customer");
+        $("#btnU").show();
+        $("#btn").hide();
+        
+        debugger
+        var length = ($(e)[0].closest('tr').cells.length) - 1;
+        var modelD = ["#Supplier_name", "#Distancefrom_depot", "#Area",
+            "#Supplier_location", "#Effective_from"];
+
+        for (var i = 0; i < length; i++) {
+            $(modelD[i]).val($(e)[0].closest('tr').cells[i].innerHTML);
+        }
+
+        $("#staticBackdrop").modal("show");
+        var idr = $(e.parentElement).attr("id");
+        $("#btnU").click(function () {
+
+            let objDepot = {
+                Depot_Id: $("#depoId").val(),
+                Depot_code: $("#Depot_code").val(),
+                Depot_name: $("#Depot_name").val(),
+                Valid_from: $("#fromdate").val(),
+                Valid_to: $("#todate").val(),
+                Depot_type: $("#Depot_type").val(),
+                Status: $("#Status").val(),
+                Depot_address: $("#Depot_address").val(),
+                Phone_no: $("#Phone_no").val()
+            }
+
+            let objclient = {
+                SupplierDetails_Id: $("#SupplierDetails_Id").val(),
+                Supplier_name: $("#Supplier_name").val(),
+                Depot_Id: $("#Depot_Id").val(),
+                Distancefrom_depot: $("#Distancefrom_depot").val(),
+                Area: $("#Area").val(),
+                Supplier_location: $("#Supplier_location").val(),
+                Effective_from: $("#effectivefrom").val(),
+
+            };
+            debugger
+            $.ajax({
+                url: "/Supplier/flagU",
+                method: "POST",
+                data: {
+                    id: idr,
+                    s: objclient,
+                    d: objDepot
+                },
+                dataType: "JSON",
+                success: function (m) {
+                    debugger
+                    alert("Updated Successfully!")
+                    window.location.href = "/Supplier/SupplierList?value=y";
+                }
+            });
+        })
+    };
+
+
+    $(document).ready(function () {
+
+        $("#finalSave").click(function () {
+
+            debugger
+            var obj = {
+                isvalid: true,
+                msgs: "",
+            }
+
+            //depotid
+            if ($("#Depot_Id").val() == "") {
+                obj.msgs += "Depot Id is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //depotcode
+            if ($("#Depot_code").val() == "") {
+                obj.msgs += "Depot Code is Mandatory! \n";
+                obj.isvalid = false;
+            }
+            if ($("#Depot_code").val().length > 50) {
+                obj.msgs += "Depot name length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+
+
+            //depotname
+            if ($("#Depot_name").val() == "") {
+                obj.msgs += "Depot name is Mandatory! \n";
+                obj.isvalid = false;
+            }
+            if ($("#Depot_name").val().length > 50) {
+                obj.msgs += "Depot name length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+
+            //validfrom date
+            if ($("#fromdate").val() == '') {
+                obj.msgs += "Valid from field is Mandatory! \n";
+                obj.isvalid = false;
+            }
+            if ($("#fromdate").val() > $("#todate").val()) {
+                obj.msgs += "Valid from field should be lesser than Valid to! \n";
+                obj.isvalid = false;
+            }
+
+            //validto date
+            if ($("#todate").val() == '') {
+                obj.msgs += "Valid to field is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //LOVstatus
+            if ($("#Status").val() == '') {
+                obj.msgs += "Status field is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //radiotype
+            if ($("#Depot_type").val() == '') {
+                obj.msgs += "Depot type is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            // depotaddress
+            if ($("#Depot_address").val() == '') {
+                obj.msgs += "Depot address is Mandatory! \n";
+                obj.isvalid = false;
+            }
+            if ($("#Depot_code").val().length > 500) {
+                obj.msgs += "Depot name length must be less than 500! \n";
+                obj.isvalid = false;
+            }
+
+            //phonenumber
+            if ($("#Phone_no").val().length > 10 || $("#Phone_no").val().length < 10) {
+                obj.msgs += "Phone number isn't correct! \n";
+                obj.isvalid = false;
+            }
+
+
+            if (obj.isvalid == true) {
+                debugger
+                let objClient = {
+                    Depot_Id : $("#depoId").val(),
+                    Depot_code: $("#Depot_code").val(),
+                    Depot_name: $("#Depot_name").val(),
+                    Valid_from: $("#fromdate").val(),
+                    Valid_to: $("#todate").val(),
+                    Depot_type: $("#Depot_type").val(),
+                    Status: $("#Status").val(),
+                    Depot_address: $("#Depot_address").val(),
+                    Phone_no: $("#Phone_no").val(),
+                    flag: "I"
+
+                };
+                $.ajax({
+                    url: "/Depot/saveDepot",
+                    method: "POST",
+                    data: { d: objClient },
+                    dataType: "JSON",
+                    success: function (m) {
+                        debugger
+                        alert("Saved Successfully!")
+                        window.location.href = "/Depot/Depot";
+                        $("#out").text("Depot Added!");
+                    }
+                });
+            }
+            else {
+                alert(obj.msgs);
+            }
+        })
+
+        debugger
+        /*$("#btn").click(function () {
+            debugger
+            window.location.href = "/Supplier/CreateSupplier";
+        })*/
+        //validation & post
+        $("#btn1").click(function () {
+            
+        });
+        $("#popup").click(function () {
+            debugger
+            $("#staticBackdrop").modal("show");
+            $("#staticBackdropLabel").text("Create Customer");
+            $("#btnU").hide();
+            $("#btn").show();
+        })
+    })
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        Date.prototype.toDateInputValue = (function () {
+            var local = new Date(this);
+            local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+            return local.toJSON().slice(0, 10);
+        });
+        $('#effectivefrom').val(new Date().toDateInputValue());
+        $("#btn").click(function () {
+
+            
+
+
+            debugger
+            var obj = {
+                isvalid: true,
+                msgs: "",
+            }
+
+            //SupplierDetails_Id
+            if ($("#SupplierDetails_Id").val() == "") {
+                obj.msgs += "Supplier Details Id is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //Supplier_name
+            if ($("#Supplier_name").val() == "") {
+                obj.msgs += "Supplier name is Mandatory! \n";
+                obj.isvalid = false;
+            } if ($("#Supplier_name").val().length > 50) {
+                obj.msgs += "Supplier name length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+
+
+            //Depot_Id
+            if ($("#Depot_Id").val() == "") {
+                obj.msgs += "Depot Id is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //Distancefrom_depot
+            if ($("#Distancefrom_depot").val() == "") {
+                obj.msgs += "Supplier name is Mandatory! \n";
+                obj.isvalid = false;
+            } if ($("#Distancefrom_depot").val().length > 50) {
+                obj.msgs += "Distance from depot length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+
+            //Area
+            if ($("#Area").val() == "") {
+                obj.msgs += "Area is Mandatory! \n";
+                obj.isvalid = false;
+            } if ($("#Area").val().length > 50) {
+                obj.msgs += "Area length must be less than 50! \n";
+                obj.isvalid = false;
+            }
+
+            //Supplier_location
+            if ($("#Supplier_location").val() == "") {
+                obj.msgs += "Supplier location is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            //effectivefrom
+            var d = new Date(this)
+            if ($("#effectivefrom").val() == d) {
+                obj.msgs += "Effective from field is Mandatory! \n";
+                obj.isvalid = false;
+            }
+
+            if (obj.isvalid == true) {
+                let objDepot = {
+                    Depot_Id: $("#depoId").val(),
+                    Depot_code: $("#Depot_code").val(),
+                    Depot_name: $("#Depot_name").val(),
+                    Valid_from: $("#fromdate").val(),
+                    Valid_to: $("#todate").val(),
+                    Depot_type: $("#Depot_type").val(),
+                    Status: $("#Status").val(),
+                    Depot_address: $("#Depot_address").val(),
+                    Phone_no: $("#Phone_no").val()
+                }
+
+                let objclient = {
+                    SupplierDetails_Id: $("#SupplierDetails_Id").val(),
+                    Supplier_name: $("#Supplier_name").val(),
+                    Depot_Id: $("#Depot_Id").val(),
+                    Distancefrom_depot: $("#Distancefrom_depot").val(),
+                    Area: $("#Area").val(),
+                    Supplier_location: $("#Supplier_location").val(),
+                    Effective_from: $("#effectivefrom").val(),
+
+                };
+                $.ajax({
+                    url: "/Supplier/addSupplier",
+                    method: "POST",
+                    data: {
+                        s: objclient,
+                        d: objDepot
+                    },
+                    dataType: "JSON",
+                    success: function (m) {
+                        debugger
+                      window.location.href = "/Supplier/SupplierList?value=y";
+
+                        //$.ajax({
+                        //    url: "/Supplier/SupplierList",
+                        //    method: "POST",
+                        //    data: { value: "y" },
+                        //    success: function (m) {    
+                        //    }
+                        //});
+                    }
+                });
+            }
+
+            else {
+                alert(obj.msgs);
+            }
+        });
+
+        $("#btndone").click(function () {
+            debugger
+            window.location.href = "/Supplier/SupplierList"
+        })
+
+        /*let numRecords = $('#suppTable').find('tr').length - 1;
+        let pageNo = numRecords / 5;*/
+    
+    });
+
+    function pageclick(e) {
+        debugger
+        var _page = $("#" + e.id).text();
+
+        $.ajax({
+            url: "/Supplier/Pagination?page="+_page,
+            dataType: "JSON",
+            success: function (m) {
+                debugger
+            }
+        })
+    }
+
+
+</script>
+
+

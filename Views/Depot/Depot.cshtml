@@ -1,0 +1,144 @@
+﻿
+@model PojectDepot.Models.DepotViewModel
+
+@{
+    ViewBag.Title = "Depot List";
+}
+<script src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous">
+</script>
+
+
+
+<br />
+
+<h2>Depot List</h2>
+
+<br />
+<table class="table rounded-1" style="background-color:whitesmoke">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Depot Code")
+            </th>
+            <th>
+                @Html.DisplayName("Depot Name")
+            </th>
+            <th>
+                @Html.DisplayName("Valid From")
+            </th>
+            <th>
+                @Html.DisplayName("Valid To")
+            </th>
+            <th>
+                @Html.DisplayName("Depot Type")
+            </th>
+            <th>
+                @Html.DisplayName("Status")
+            </th>
+            <th>
+                @Html.DisplayName("Depot Address")
+            </th>
+            <th>
+                @Html.DisplayName("Phone Number")
+            </th>
+            <th>    </th>
+            <th></th>
+
+        </tr>
+
+        @foreach (var item in Model.Depots)
+        {
+            <tr id="@item.Depot_Id">
+                <td onclick="onEdit(this)">@item.Depot_code</td>
+                <td onclick="onEdit(this)">@item.Depot_name</td>
+                <td onclick="onEdit(this)">@item.Valid_from</td>
+                <td onclick="onEdit(this)">@item.Valid_to</td>
+                <td onclick="onEdit(this)">@item.Depot_type</td>
+                <td onclick="onEdit(this)">@item.Status</td>
+                <td onclick="onEdit(this)">@item.Depot_address</td>
+                <td >@item.Phone_no</td>
+
+                <td><button class="btn btn-secondary" onclick="onDelete(this)" id="@item.Depot_Id">Delete</button></td>
+
+            </tr>
+        }
+    </thead>
+</table>
+
+<p id="out"></p>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#addBtn").click(function () {
+            debugger
+            $("#create").show();
+            $("#btn1").show();
+            $("#update").hide();
+        })
+        $("#cancelBtn").click(function () {
+            debugger
+            $("#create").hide();
+        })
+    })
+
+    //onDelete record
+    function onDelete(e) {
+        debugger
+        $("#" + e.id).hide();
+        $.ajax({
+            url: "/Depot/DeleteDb",
+            method: "POST",
+            data: { id: e.id },
+            dataType: "JSON",
+            success: function (m) {
+                debugger
+                window.location.href = "/Depot/Depot";
+                $("#out").text("Depot Removed!");
+            }
+        });
+    };
+
+    //onEdit record
+    function onEdit(e) {
+        debugger 
+        var id1 = $(e).closest('tr').attr('id')
+
+        window.location.href = "/Supplier/SupplierList?id=" + id1;
+
+
+
+
+        /*$.ajax({
+            url: "/Supplier/SupplierList?",
+            method: "POST",
+            data: {id : id1},
+            dataType: "JSON",
+            success: function (m) {
+                debugger
+            }
+        })*/
+
+
+        /*var length = ($("#" + e.id)[0].cells.length) - 2;
+        var modelD = ["#Depot_Id", "#Depot_code", "#Depot_name", "#fromdate",
+            "#todate", "#Depot_type", "#Status", "#Depot_address", "#Phone_no"];
+
+        ($("#" + e.id).cells[0].innerHTML).each(function (item, val) {
+            debugger
+            $(momodelD[item]).val()
+
+        });*/
+
+
+        /*$("#create").show();
+        $("#btn1").hide();
+        $("#update").show();*/
+
+    };
+
+</script>
+
